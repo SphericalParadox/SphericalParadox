@@ -1,100 +1,244 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Multicoloured Group - Coming Soon</title>
-    <!-- Load Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <style>
-        /*
-        Define Gilmer fonts using @font-face and the provided OTF files.
-        We map the regular file to font-weight 400 and the bold file to font-weight 700.
-        */
-        @font-face {
-            font-family: 'Gilmer';
-            src: url('https://files.multicolouredgroup.com/Static/Gilmer%20Regular.otf') format('opentype');
-            font-weight: 400; /* Maps to Tailwind 'font-normal' */
-            font-style: normal;
-        }
-        @font-face {
-            font-family: 'Gilmer';
-            src: url('https://files.multicolouredgroup.com/Static/Gilmer%20Bold.otf') format('opentype');
-            font-weight: 700; /* Maps to Tailwind 'font-bold' */
-            font-style: normal;
-        }
-    </style>
+    <title>Multicoloured Group</title>
 
-    <!-- Configure Tailwind for a modern look and custom colors -->
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        // User's specified background color (0F283C)
-                        'site-bg': '#0F283C', 
-                        // User's specified main color (375064) - used for primary text/branding
-                        'main-color': '#375064', 
-                        // User's specified accent color (517591) - used for secondary text/borders
-                        'accent-blue': '#517591', 
-                    },
-                    fontFamily: {
-                        // Set 'gilmer' as the custom font family
-                        'gilmer': ['Gilmer', 'sans-serif'],
-                    },
-                }
+    <!-- Fonts -->
+    <style>
+        @font-face {
+            font-family: 'GilmerBold';
+            src: url('https://files.multicolouredgroup.com/Static/Gilmer%20Bold.otf') format('opentype');
+            font-weight: bold;
+        }
+        @font-face {
+            font-family: 'GilmerRegular';
+            src: url('https://files.multicolouredgroup.com/Static/Gilmer%20Regular.otf') format('opentype');
+            font-weight: normal;
+        }
+
+        /* Reset & Basic Styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'GilmerRegular', sans-serif;
+            background-color: #0F283C;
+            color: white;
+            line-height: 1.6;
+        }
+        a {
+            text-decoration: none;
+            color: #517591;
+        }
+        a:hover {
+            color: #375064;
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background-color: #0F283C;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #375064;
+        }
+        header img {
+            height: 50px;
+        }
+        nav a {
+            margin-left: 20px;
+            font-weight: bold;
+            font-family: 'GilmerBold', sans-serif;
+        }
+
+        /* Hero Section */
+        .hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 100px 20px;
+            text-align: center;
+        }
+        .hero h1 {
+            font-family: 'GilmerBold', sans-serif;
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: #375064;
+        }
+        .hero p {
+            font-size: 20px;
+            max-width: 600px;
+            color: #FFFFFF;
+        }
+
+        /* Regions Section */
+        .regions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 60px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .region-card {
+            background-color: #375064;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        .region-card:hover {
+            transform: translateY(-5px);
+        }
+        .region-card img {
+            height: 80px;
+            margin-bottom: 15px;
+        }
+        .region-card h3 {
+            font-family: 'GilmerBold', sans-serif;
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+
+        /* News Section */
+        .news-section {
+            background-color: #0F283C;
+            padding: 60px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .news-section h2 {
+            font-family: 'GilmerBold', sans-serif;
+            font-size: 36px;
+            text-align: center;
+            margin-bottom: 40px;
+            color: #517591;
+        }
+        .news-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .news-card {
+            background-color: #517591;
+            border-radius: 15px;
+            padding: 20px;
+            transition: transform 0.3s;
+        }
+        .news-card:hover {
+            transform: translateY(-5px);
+        }
+        .news-card h4 {
+            font-family: 'GilmerBold', sans-serif;
+            margin-bottom: 10px;
+        }
+        .news-card p {
+            font-size: 16px;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            font-size: 14px;
+            color: #517591;
+            border-top: 1px solid #375064;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 36px;
+            }
+            .hero p {
+                font-size: 18px;
             }
         }
-    </script>
+    </style>
 </head>
-<!-- The body uses the specified background color (0F283C) and the Gilmer font -->
-<body class="bg-site-bg font-gilmer h-screen flex items-center justify-center p-4">
+<body>
 
-    <!-- Main Container Card -->
-    <!-- Headings (h1, h2) will automatically pick up font-bold (700) from the Gilmer definition -->
-    <div class="w-full max-w-lg p-8 md:p-12 bg-white/5 backdrop-blur-sm rounded-xl shadow-2xl text-center border border-white/10 transition-all duration-300 hover:shadow-main-color/50">
+    <!-- Header -->
+    <header>
+        <img src="https://files.multicolouredgroup.com/Static/multicoloured_group_long.png" alt="Multicoloured Group Logo">
+        <nav>
+            <a href="#">Home</a>
+            <a href="#">Manchester</a>
+            <a href="#">Lancashire</a>
+            <a href="#">Wessex</a>
+            <a href="#">South Coasts</a>
+            <a href="#">Jersey</a>
+            <a href="#">Highlands</a>
+            <a href="#">News</a>
+        </nav>
+    </header>
 
-        <!-- Company Logo -->
-        <img 
-            src="https://files.multicolouredgroup.com/Static/multicoloured_group_long.png" 
-            alt="Company Logo - Multicoloured Group" 
-            class="mx-auto w-4/5 max-w-xs h-auto mb-8"
-            onerror="this.onerror=null; this.src='https://placehold.co/300x60/f0f0f0/375064/ffffff?text=Multicoloured+Group';"
-        >
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Multicoloured Group</h1>
+        <p>Connecting Cities, Colouring Journeys. Discover our regions and services across the UK.</p>
+    </section>
 
-        <!-- Status Message (Gilmer Regular) -->
-        <p class="text-2xl md:text-3xl font-light text-accent-blue mb-8">
-            Our New Website is Launching Soon.
-        </p>
-
-        <!-- Call to Action / Information Box -->
-        <div class="bg-white/10 p-6 rounded-lg my-6 border border-accent-blue/50">
-            <!-- Subheading (Gilmer Bold) -->
-            <h2 class="text-xl font-semibold text-white mb-2">
-                Customer Information
-            </h2>
-            <!-- Body Text (Gilmer Regular) -->
-            <p class="text-white/75 leading-relaxed font-normal">
-                You can find all our information through the Multicoloured Group app, and see our latest news and updates during the downtime.
-                
-            </p>
-            <!-- Call to Action Text (Gilmer Regular) -->
-            <p class="mt-4 text-sm text-white/50 font-normal">
-                For urgent inquiries, please contact us directly.
-            </p>
+    <!-- Regions Section -->
+    <section class="regions">
+        <div class="region-card">
+            <img src="https://via.placeholder.com/150x80?text=Manchester" alt="Manchester">
+            <h3>Manchester</h3>
         </div>
-        
-        <!-- Contact Information Placeholder -->
-        <div class="mt-8 font-normal">
-            <!-- Removed Phone Number -->
-            <p class="text-white font-medium">
-                Email: <a href="mailto:info@multicolouredgroup.com" class="text-accent-blue hover:text-white transition duration-200 underline">info@multicolouredgroup.com</a>
-            </p>
+        <div class="region-card">
+            <img src="https://via.placeholder.com/150x80?text=Lancashire" alt="Lancashire">
+            <h3>Lancashire</h3>
         </div>
+        <div class="region-card">
+            <img src="https://files.multicolouredgroup.com/Static/wessexbuses.png" alt="Wessex">
+            <h3>Wessex</h3>
+        </div>
+        <div class="region-card">
+            <img src="https://files.multicolouredgroup.com/Static/southcoasts.png" alt="South Coasts">
+            <h3>South Coasts</h3>
+        </div>
+        <div class="region-card">
+            <img src="https://files.multicolouredgroup.com/Static/libertybus.png" alt="Jersey">
+            <h3>Jersey</h3>
+        </div>
+        <div class="region-card">
+            <img src="https://via.placeholder.com/150x80?text=Highlands" alt="Highlands">
+            <h3>Highlands</h3>
+        </div>
+    </section>
 
-    </div>
+    <!-- News Section -->
+    <section class="news-section">
+        <h2>Latest News</h2>
+        <div class="news-cards">
+            <div class="news-card">
+                <h4>News Header 1</h4>
+                <p>Some brief information about this news item. Placeholder text for now.</p>
+            </div>
+            <div class="news-card">
+                <h4>News Header 2</h4>
+                <p>Some brief information about this news item. Placeholder text for now.</p>
+            </div>
+            <div class="news-card">
+                <h4>News Header 3</h4>
+                <p>Some brief information about this news item. Placeholder text for now.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        &copy; 2025 Multicoloured Group. All rights reserved.
+    </footer>
 
 </body>
 </html>

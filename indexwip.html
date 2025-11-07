@@ -1,0 +1,100 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multicoloured Group - Coming Soon</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        /*
+        Define Gilmer fonts using @font-face and the provided OTF files.
+        We map the regular file to font-weight 400 and the bold file to font-weight 700.
+        */
+        @font-face {
+            font-family: 'Gilmer';
+            src: url('https://files.multicolouredgroup.com/Static/Gilmer%20Regular.otf') format('opentype');
+            font-weight: 400; /* Maps to Tailwind 'font-normal' */
+            font-style: normal;
+        }
+        @font-face {
+            font-family: 'Gilmer';
+            src: url('https://files.multicolouredgroup.com/Static/Gilmer%20Bold.otf') format('opentype');
+            font-weight: 700; /* Maps to Tailwind 'font-bold' */
+            font-style: normal;
+        }
+    </style>
+
+    <!-- Configure Tailwind for a modern look and custom colors -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        // User's specified background color (0F283C)
+                        'site-bg': '#0F283C', 
+                        // User's specified main color (375064) - used for primary text/branding
+                        'main-color': '#375064', 
+                        // User's specified accent color (517591) - used for secondary text/borders
+                        'accent-blue': '#517591', 
+                    },
+                    fontFamily: {
+                        // Set 'gilmer' as the custom font family
+                        'gilmer': ['Gilmer', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+</head>
+<!-- The body uses the specified background color (0F283C) and the Gilmer font -->
+<body class="bg-site-bg font-gilmer h-screen flex items-center justify-center p-4">
+
+    <!-- Main Container Card -->
+    <!-- Headings (h1, h2) will automatically pick up font-bold (700) from the Gilmer definition -->
+    <div class="w-full max-w-lg p-8 md:p-12 bg-white/5 backdrop-blur-sm rounded-xl shadow-2xl text-center border border-white/10 transition-all duration-300 hover:shadow-main-color/50">
+
+        <!-- Company Logo -->
+        <img 
+            src="https://files.multicolouredgroup.com/Static/multicoloured_group_long.png" 
+            alt="Company Logo - Multicoloured Group" 
+            class="mx-auto w-4/5 max-w-xs h-auto mb-8"
+            onerror="this.onerror=null; this.src='https://placehold.co/300x60/f0f0f0/375064/ffffff?text=Multicoloured+Group';"
+        >
+
+        <!-- Status Message (Gilmer Regular) -->
+        <p class="text-2xl md:text-3xl font-light text-accent-blue mb-8">
+            Our New Website is Launching Soon.
+        </p>
+
+        <!-- Call to Action / Information Box -->
+        <div class="bg-white/10 p-6 rounded-lg my-6 border border-accent-blue/50">
+            <!-- Subheading (Gilmer Bold) -->
+            <h2 class="text-xl font-semibold text-white mb-2">
+                Customer Information
+            </h2>
+            <!-- Body Text (Gilmer Regular) -->
+            <p class="text-white/75 leading-relaxed font-normal">
+                You can find all our information through the Multicoloured Group app, and see our latest news and updates during the downtime.
+                
+            </p>
+            <!-- Call to Action Text (Gilmer Regular) -->
+            <p class="mt-4 text-sm text-white/50 font-normal">
+                For urgent inquiries, please contact us directly.
+            </p>
+        </div>
+        
+        <!-- Contact Information Placeholder -->
+        <div class="mt-8 font-normal">
+            <!-- Removed Phone Number -->
+            <p class="text-white font-medium">
+                Email: <a href="mailto:info@multicolouredgroup.com" class="text-accent-blue hover:text-white transition duration-200 underline">info@multicolouredgroup.com</a>
+            </p>
+        </div>
+
+    </div>
+
+</body>
+</html>
