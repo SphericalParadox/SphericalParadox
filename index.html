@@ -3,242 +3,526 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Multicoloured Group</title>
-
-    <!-- Fonts -->
+    <title>Multicoloured Group | Connecting Communities</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Inter as fallback, but primary fonts are loaded via @font-face -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <style>
+        /* Define and load Custom Fonts from the provided URLs */
         @font-face {
-            font-family: 'GilmerBold';
-            src: url('https://files.multicolouredgroup.com/Static/Gilmer%20Bold.otf') format('opentype');
-            font-weight: bold;
+            font-family: 'Gilmer Regular';
+            src: url('https://files.multicolouredgroup.com/Static/Gilmer%20Regular.otf') format('opentype');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
         }
         @font-face {
-            font-family: 'GilmerRegular';
-            src: url('https://files.multicolouredgroup.com/Static/Gilmer%20Regular.otf') format('opentype');
-            font-weight: normal;
+            font-family: 'Gilmer Bold';
+            src: url('https://files.multicolouredgroup.com/Static/Gilmer%20Bold.otf') format('opentype');
+            font-weight: 700;
+            font-style: normal;
+            font-display: swap;
+        }
+        
+        /* Define CSS Variables for Colors */
+        :root {
+            --color-primary: #375064; /* Main */
+            --color-accent: #517591;  /* Accent */
+            --color-bg: #0F283C;     /* Background */
+            --color-text-light: #f0f4f8;
         }
 
-        /* Reset & Basic Styles */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+        /* Apply Gilmer fonts and background color globally */
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Gilmer Bold', sans-serif;
         }
         body {
-            font-family: 'GilmerRegular', sans-serif;
-            background-color: #0F283C;
-            color: white;
+            font-family: 'Gilmer Regular', sans-serif;
+            background-color: var(--color-bg);
+            color: var(--color-text-light);
             line-height: 1.6;
         }
-        a {
-            text-decoration: none;
-            color: #517591;
+
+        /* Utility classes for the custom colors */
+        .bg-primary { background-color: var(--color-primary); }
+        .text-accent { color: var(--color-accent); }
+        .border-accent { border-color: var(--color-accent); }
+        .hover\:bg-accent:hover { background-color: var(--color-accent); }
+        .hover\:bg-primary:hover { background-color: var(--color-primary); }
+        .ring-accent { --tw-ring-color: var(--color-accent); }
+
+        /* Ensure smooth scrolling for navigation links */
+        html {
+            scroll-behavior: smooth;
         }
-        a:hover {
-            color: #375064;
+        
+        /* Custom image styling to ensure logos on dark background are clearly visible */
+        .opco-logo {
+            max-height: 32px; /* h-8 equivalent */
+            width: auto;
+            object-fit: contain;
         }
 
-        /* Header */
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 40px;
-            background-color: #0F283C;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            border-bottom: 1px solid #375064;
-        }
-        header img {
-            height: 50px;
-        }
-        nav a {
-            margin-left: 20px;
-            font-weight: bold;
-            font-family: 'GilmerBold', sans-serif;
-        }
-
-        /* Hero Section */
-        .hero {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 100px 20px;
-            text-align: center;
-        }
-        .hero h1 {
-            font-family: 'GilmerBold', sans-serif;
-            font-size: 48px;
-            margin-bottom: 20px;
-            color: #375064;
-        }
-        .hero p {
-            font-size: 20px;
-            max-width: 600px;
-            color: #FFFFFF;
-        }
-
-        /* Regions Section */
-        .regions {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            padding: 60px 20px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        .region-card {
-            background-color: #375064;
-            border-radius: 15px;
-            padding: 20px;
-            text-align: center;
-            transition: transform 0.3s;
-        }
-        .region-card:hover {
-            transform: translateY(-5px);
-        }
-        .region-card img {
-            height: 80px;
-            margin-bottom: 15px;
-        }
-        .region-card h3 {
-            font-family: 'GilmerBold', sans-serif;
-            margin-bottom: 10px;
-            font-size: 24px;
-        }
-
-        /* News Section */
-        .news-section {
-            background-color: #0F283C;
-            padding: 60px 20px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        .news-section h2 {
-            font-family: 'GilmerBold', sans-serif;
-            font-size: 36px;
-            text-align: center;
-            margin-bottom: 40px;
-            color: #517591;
-        }
-        .news-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-        }
-        .news-card {
-            background-color: #517591;
-            border-radius: 15px;
-            padding: 20px;
-            transition: transform 0.3s;
-        }
-        .news-card:hover {
-            transform: translateY(-5px);
-        }
-        .news-card h4 {
-            font-family: 'GilmerBold', sans-serif;
-            margin-bottom: 10px;
-        }
-        .news-card p {
-            font-size: 16px;
-        }
-
-        /* Footer */
-        footer {
-            text-align: center;
-            padding: 40px 20px;
-            font-size: 14px;
-            color: #517591;
-            border-top: 1px solid #375064;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 36px;
-            }
-            .hero p {
-                font-size: 18px;
-            }
+        /* Styling for the dropdown filter */
+        #region-filter {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23f0f4f8'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1.5em 1.5em;
         }
     </style>
 </head>
 <body>
 
-    <!-- Header -->
-    <header>
-        <img src="https://files.multicolouredgroup.com/Static/multicoloured_group_long.png" alt="Multicoloured Group Logo">
-        <nav>
-            <a href="#">Home</a>
-            <a href="#">Manchester</a>
-            <a href="#">Lancashire</a>
-            <a href="#">Wessex</a>
-            <a href="#">South Coasts</a>
-            <a href="#">Jersey</a>
-            <a href="#">Highlands</a>
-            <a href="#">News</a>
+    <!-- Navigation Bar -->
+    <header class="sticky top-0 z-50 shadow-lg" style="background-color: var(--color-primary);">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo -->
+                <div class="flex-shrink-0">
+                    <img class="h-10 w-auto" src="https://files.multicolouredgroup.com/Static/multicoloured_group_long.png" alt="Multicoloured Group Logo" onerror="this.onerror=null;this.src='https://placehold.co/200x40/375064/ffffff?text=Multicoloured+Group';">
+                </div>
+                <!-- Desktop Navigation Links -->
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4 text-sm font-semibold">
+                        <a href="#home" class="text-white hover:text-accent px-3 py-2 rounded-md transition duration-200">Home</a>
+                        <a href="#opcos" class="text-white hover:text-accent px-3 py-2 rounded-md transition duration-200">Our Operating Companies</a>
+                        <a href="#about" class="text-white hover:text-accent px-3 py-2 rounded-md transition duration-200">About Us</a>
+                        <a href="#updates" class="text-white hover:text-accent px-3 py-2 rounded-md transition duration-200">Updates</a> <!-- Updated Link -->
+                    </div>
+                </div>
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-white hover:text-accent focus:outline-none focus:ring-2 focus:ring-inset ring-accent" aria-expanded="false">
+                        <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                        <svg class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
         </nav>
+
+        <!-- Mobile Menu Panel (Hidden by default) -->
+        <div class="md:hidden transition-all duration-300 ease-in-out hidden" id="mobile-menu">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 text-sm font-semibold">
+                <a href="#home" class="text-white hover:bg-primary block px-3 py-2 rounded-md transition duration-200">Home</a>
+                <a href="#opcos" class="text-white hover:bg-primary block px-3 py-2 rounded-md transition duration-200">Our Operating Companies</a>
+                <a href="#about" class="text-white hover:bg-primary block px-3 py-2 rounded-md transition duration-200">About Us</a>
+                <a href="#updates" class="text-white hover:bg-primary block px-3 py-2 rounded-md transition duration-200">Updates</a> <!-- Updated Link -->
+            </div>
+        </div>
     </header>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <h1>Multicoloured Group</h1>
-        <p>Connecting Cities, Colouring Journeys. Discover our regions and services across the UK.</p>
-    </section>
+    <main>
+        <!-- Hero Section: Landing Page Focus -->
+        <section id="home" class="relative overflow-hidden pt-16 sm:pt-24 lg:pt-32 pb-24 border-b border-accent/20">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h1 class="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white mb-6">
+                    Connecting Communities, Powering <span class="text-accent">Tomorrow's Transit</span>
+                </h1>
+                <p class="mt-3 max-w-3xl mx-auto text-xl text-gray-300 sm:mt-5 sm:text-2xl">
+                    The Multicoloured Group is a global leader in transport services, dedicated to delivering sustainable and essential journeys across our diversified portfolio.
+                </p>
+                <div class="mt-10 max-w-md mx-auto sm:flex sm:justify-center md:mt-12">
+                    <div class="rounded-lg shadow">
+                        <a href="#opcos" class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-semibold rounded-lg text-white bg-accent hover:bg-primary transition duration-300 md:py-4 md:text-lg md:px-10 ring-2 ring-accent">
+                            Explore Our Companies
+                        </a>
+                    </div>
+                    <div class="mt-3 rounded-lg shadow sm:mt-0 sm:ml-3">
+                        <a href="#about" class="w-full flex items-center justify-center px-8 py-3 border border-accent text-base font-semibold rounded-lg text-accent hover:bg-accent/20 transition duration-300 md:py-4 md:text-lg md:px-10">
+                            Learn About Our Mission
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-    <!-- Regions Section -->
-    <section class="regions">
-        <div class="region-card">
-            <img src="https://via.placeholder.com/150x80?text=Manchester" alt="Manchester">
-            <h3>Manchester</h3>
-        </div>
-        <div class="region-card">
-            <img src="https://via.placeholder.com/150x80?text=Lancashire" alt="Lancashire">
-            <h3>Lancashire</h3>
-        </div>
-        <div class="region-card">
-            <img src="https://files.multicolouredgroup.com/Static/wessexbuses.png" alt="Wessex">
-            <h3>Wessex</h3>
-        </div>
-        <div class="region-card">
-            <img src="https://files.multicolouredgroup.com/Static/southcoasts.png" alt="South Coasts">
-            <h3>South Coasts</h3>
-        </div>
-        <div class="region-card">
-            <img src="https://files.multicolouredgroup.com/Static/libertybus.png" alt="Jersey">
-            <h3>Jersey</h3>
-        </div>
-        <div class="region-card">
-            <img src="https://via.placeholder.com/150x80?text=Highlands" alt="Highlands">
-            <h3>Highlands</h3>
-        </div>
-    </section>
+        <!-- Operating Companies Section (OpCos) -->
+        <section id="opcos" class="py-16 sm:py-24 lg:py-32">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-4xl font-extrabold text-white sm:text-5xl mb-4">
+                        Our Diverse <span class="text-accent">Operating Companies</span>
+                    </h2>
+                    <p class="mt-4 text-xl text-gray-400 max-w-5xl mx-auto">
+                        We manage a focused portfolio of bus and transport businesses across the UK and Islands, providing critical transport links for millions of passengers.
+                    </p>
+                </div>
 
-    <!-- News Section -->
-    <section class="news-section">
-        <h2>Latest News</h2>
-        <div class="news-cards">
-            <div class="news-card">
-                <h4>News Header 1</h4>
-                <p>Some brief information about this news item. Placeholder text for now.</p>
+                <!-- Grid for 8 OpCos (Now 4 columns wide on large screens) -->
+                <div class="mt-16 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+                    
+                    <!-- OpCo Card 1: Manchester Busways (Logo) -->
+                    <div class="bg-primary p-6 rounded-xl shadow-xl hover:ring-4 ring-accent transition duration-300 flex flex-col justify-between">
+                        <div>
+                            <img class="opco-logo mb-3" src="https://files.multicolouredgroup.com/Static/multicolouredmanchester.png" alt="Manchester Busways Logo" onerror="this.onerror=null;this.src='https://placehold.co/180x32/375064/517591?text=MANCHESTER';">
+                            <p class="text-gray-300 text-sm mt-3">
+                                Serving the greater Manchester area with extensive regional and commuter services, ensuring reliable urban connectivity.
+                            </p>
+                        </div>
+                        <a href="#" class="mt-4 inline-block text-sm font-semibold text-accent hover:text-white transition duration-200 self-start">
+                            Visit Site &rarr;
+                        </a>
+                    </div>
+                    
+                    <!-- OpCo Card 2: London (Logo) -->
+                    <div class="bg-primary p-6 rounded-xl shadow-xl hover:ring-4 ring-accent transition duration-300 flex flex-col justify-between">
+                        <div>
+                            <img class="opco-logo mb-3" src="https://files.multicolouredgroup.com/Static/multicolouredlondon.png" alt="Multicoloured London Logo" onerror="this.onerror=null;this.src='https://placehold.co/180x32/375064/517591?text=LONDON';">
+                            <p class="text-gray-300 text-sm mt-3">
+                                Operating essential contracted bus services within the Greater London area, focusing on efficiency and high passenger capacity.
+                            </p>
+                        </div>
+                        <a href="#" class="mt-4 inline-block text-sm font-semibold text-accent hover:text-white transition duration-200 self-start">
+                            Visit Site &rarr;
+                        </a>
+                    </div>
+
+                    <!-- OpCo Card 3: LibertyBus (Logo) -->
+                    <div class="bg-primary p-6 rounded-xl shadow-xl hover:ring-4 ring-accent transition duration-300 flex flex-col justify-between">
+                        <div>
+                            <img class="opco-logo mb-3" src="https://files.multicolouredgroup.com/Static/libertybus.png" alt="LibertyBus Logo" onerror="this.onerror=null;this.src='https://placehold.co/180x32/375064/517591?text=LIBERTYBUS';">
+                            <p class="text-gray-300 text-sm mt-3">
+                                The principal bus operator for the island of Jersey, committed to providing a reliable and enhanced, modern passenger service.
+                            </p>
+                        </div>
+                        <a href="#" class="mt-4 inline-block text-sm font-semibold text-accent hover:text-white transition duration-200 self-start">
+                            Visit Site &rarr;
+                        </a>
+                    </div>
+                    
+                    <!-- OpCo Card 4: Lancashire Travel (Logo) -->
+                    <div class="bg-primary p-6 rounded-xl shadow-xl hover:ring-4 ring-accent transition duration-300 flex flex-col justify-between">
+                        <div>
+                            <img class="opco-logo mb-3" src="https://files.multicolouredgroup.com/Static/multicolouredlancashire.png" alt="Lancashire Travel Logo" onerror="this.onerror=null;this.src='https://placehold.co/180x32/375064/517591?text=LANCASHIRE';">
+                            <p class="text-gray-300 text-sm mt-3">
+                                Offering reliable and local public transport solutions across the historic county of Lancashire, focusing on customer convenience.
+                            </p>
+                        </div>
+                        <a href="#" class="mt-4 inline-block text-sm font-semibold text-accent hover:text-white transition duration-200 self-start">
+                            Visit Site &rarr;
+                        </a>
+                    </div>
+                    
+                    <!-- OpCo Card 5: Wessex Buses (Logo) -->
+                    <div class="bg-primary p-6 rounded-xl shadow-xl hover:ring-4 ring-accent transition duration-300 flex flex-col justify-between">
+                        <div>
+                            <img class="opco-logo mb-3" src="https://files.multicolouredgroup.com/Static/wessexbuses.png" alt="Wessex Buses Logo" onerror="this.onerror=null;this.src='https://placehold.co/180x32/375064/517591?text=WESSEX';">
+                            <p class="text-gray-300 text-sm mt-3">
+                                Dedicated to connecting key towns and cities across the South West of England with high-quality regional bus routes.
+                            </p>
+                        </div>
+                        <a href="#" class="mt-4 inline-block text-sm font-semibold text-accent hover:text-white transition duration-200 self-start">
+                            Visit Site &rarr;
+                        </a>
+                    </div>
+                    
+                    <!-- OpCo Card 6: South Coasts (Logo) -->
+                    <div class="bg-primary p-6 rounded-xl shadow-xl hover:ring-4 ring-accent transition duration-300 flex flex-col justify-between">
+                        <div>
+                            <img class="opco-logo mb-3" src="https://files.multicolouredgroup.com/Static/southcoasts.png" alt="South Coasts Logo" onerror="this.onerror=null;this.src='https://placehold.co/180x32/375064/517591?text=SOUTH+COASTS';">
+                            <p class="text-gray-300 text-sm mt-3">
+                                Operating high-frequency urban and regional routes from Kent down to the popular Brighton metropolitan area.
+                            </p>
+                        </div>
+                        <a href="#" class="mt-4 inline-block text-sm font-semibold text-accent hover:text-white transition duration-200 self-start">
+                            Visit Site &rarr;
+                        </a>
+                    </div>
+
+                    <!-- OpCo Card 7: Highlands Connect (Logo) -->
+                    <div class="bg-primary p-6 rounded-xl shadow-xl hover:ring-4 ring-accent transition duration-300 flex flex-col justify-between">
+                        <div>
+                            <img class="opco-logo mb-3" src="https://files.multicolouredgroup.com/Static/multicolouredhighlands.png" alt="Highlands Connect Logo" onerror="this.onerror=null;this.src='https://placehold.co/180x32/375064/517591?text=HIGHLANDS';">
+                            <p class="text-gray-300 text-sm mt-3">
+                                Providing vital lifeline and tourist transport across the rugged Scottish Highlands region, linking remote communities.
+                            </p>
+                        </div>
+                        <a href="#" class="mt-4 inline-block text-sm font-semibold text-accent hover:text-white transition duration-200 self-start">
+                            Visit Site &rarr;
+                        </a>
+                    </div>
+                    
+                    <!-- OpCo Card 8: Bluebus (Logo) -->
+                    <div class="bg-primary p-6 rounded-xl shadow-xl hover:ring-4 ring-accent transition duration-300 flex flex-col justify-between">
+                        <div>
+                            <img class="opco-logo mb-3" src="https://files.multicolouredgroup.com/Static/bluebuscambs.png" alt="Bluebus Cambs Logo" onerror="this.onerror=null;this.src='https://placehold.co/180x32/375064/517591?text=BLUEBUS';">
+                            <p class="text-gray-300 text-sm mt-3">
+                                A new partner to Multicoloured Group. Focusing on providing great essential service around Cambridgeshire.
+                            </p>
+                        </div>
+                        <a href="#" class="mt-4 inline-block text-sm font-semibold text-accent hover:text-white transition duration-200 self-start">
+                            Visit Site &rarr;
+                        </a>
+                    </div>
+                    
+                </div>
             </div>
-            <div class="news-card">
-                <h4>News Header 2</h4>
-                <p>Some brief information about this news item. Placeholder text for now.</p>
+        </section>
+
+        <!-- About Us Section (Updated with Non-Profit Mission) -->
+        <section id="about" class="py-16 bg-primary">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl font-extrabold text-white mb-6 border-b border-accent/50 pb-3">
+                    Our Vision & <span class="text-accent">Non-Profit Values</span>
+                </h2>
+                <div class="max-w-4xl">
+                    <p class="text-gray-300 text-lg mb-8 p-4 border border-accent/50 rounded-lg shadow-inner bg-primary/50">
+                        Multicoloured Group is fundamentally non-profit. Every single resource, from fare revenue to investments, is reinvested directly into enhancing our services, maintaining our fleets, and developing sustainable transport solutions. Our commitment is simple: to put the best possible public transit back into the hands of the communities we serve.
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="p-4 rounded-lg bg-gray-700/50">
+                            <h3 class="text-xl font-bold text-accent mb-1">Community First</h3>
+                            <p class="text-sm text-gray-300">Our entire structure is designed to benefit local communities through continuous service improvement, not external shareholders.</p>
+                        </div>
+                        <div class="p-4 rounded-lg bg-gray-700/50">
+                            <h3 class="text-xl font-bold text-accent mb-1">Safety & Reliability</h3>
+                            <p class="text-sm text-gray-300">Prioritizing the well-being of our passengers and employees by reinvesting in modern, dependable fleet maintenance.</p>
+                        </div>
+                        <div class="p-4 rounded-lg bg-gray-700/50">
+                            <h3 class="text-xl font-bold text-accent mb-1">Sustainability</h3>
+                            <p class="text-sm text-gray-300">Driving environmental responsibility by funding the transition to low-emission and electric technologies.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="news-card">
-                <h4>News Header 3</h4>
-                <p>Some brief information about this news item. Placeholder text for now.</p>
+        </section>
+
+        <!-- Updates Section (Replaces Contact) -->
+        <section id="updates" class="py-16 sm:py-24 lg:py-32">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-4xl font-extrabold text-white sm:text-5xl mb-4">
+                        Group & Regional <span class="text-accent">Updates</span>
+                    </h2>
+                    <p class="mt-4 text-xl text-gray-400 max-w-3xl mx-auto">
+                        Latest news, service changes, and project announcements across our operating companies.
+                    </p>
+                </div>
+                
+                <!-- Filter Dropdown -->
+                <div class="mt-12 mb-8 flex justify-center">
+                    <label for="region-filter" class="text-lg text-gray-300 mr-4 self-center font-semibold">Filter by Region:</label>
+                    <select id="region-filter" class="w-full max-w-xs px-4 py-3 rounded-lg border-gray-700 bg-primary text-white shadow-md focus:border-accent focus:ring-accent ring-1 ring-accent/50 transition duration-150">
+                        <!-- Options will be populated by JavaScript -->
+                        <option value="All">Loading...</option>
+                    </select>
+                </div>
+
+                <!-- Updates Container -->
+                <div id="updates-container" class="space-y-6 max-w-5xl mx-auto">
+                    <!-- Updates will be rendered here by JavaScript -->
+                    <p class="text-center text-lg text-accent">Loading updates, please wait...</p>
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
+
+    </main>
 
     <!-- Footer -->
-    <footer>
-        &copy; 2025 Multicoloured Group. All rights reserved.
+    <footer class="py-8 border-t border-accent/20" style="background-color: var(--color-primary);">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="md:flex md:items-center md:justify-between text-center md:text-left">
+                <p class="text-sm text-gray-400">
+                    &copy; <span id="current-year"></span> Multicoloured Group. All rights reserved.
+                </p>
+                <div class="mt-4 md:mt-0">
+                    <a href="#home" class="text-sm text-gray-400 hover:text-accent ml-6">Privacy Policy</a>
+                    <a href="#home" class="text-sm text-gray-400 hover:text-accent ml-6">Terms of Service</a>
+                </div>
+            </div>
+        </div>
     </footer>
 
+    <script>
+        // FIX: Changed to relative path to avoid CORS issues now that the file is in the same repository.
+        const UPDATES_URL = './updates.txt'; 
+        let allUpdates = [];
+
+        /**
+         * Converts a Unix timestamp (seconds) into a readable date string (e.g., "15 July 2025").
+         * @param {number} timestamp - The Unix timestamp in seconds.
+         * @returns {string} The formatted date string.
+         */
+        function formatDate(timestamp) {
+            // Note: JavaScript Date constructor expects milliseconds, so we multiply by 1000.
+            const date = new Date(timestamp * 1000); 
+            const options = { day: 'numeric', month: 'long', year: 'numeric' };
+            // Ensure locale is set to UK standard for consistent output
+            return date.toLocaleDateString('en-GB', options); 
+        }
+
+        /**
+         * Fetches, parses, and loads the updates data into the application state.
+         */
+        async function loadUpdates() {
+            const container = document.getElementById('updates-container');
+            const filterSelect = document.getElementById('region-filter');
+            container.innerHTML = `<p class="text-center text-lg text-accent">Loading updates, please wait...</p>`;
+
+            try {
+                // Diagnostic: Log the URL being attempted to fetch for debugging network issues
+                console.log("Attempting to fetch updates from:", UPDATES_URL);
+                
+                // Using 'no-cache' for robustness, although same-origin requests are usually fine.
+                const response = await fetch(UPDATES_URL, {
+                    cache: 'no-cache'
+                }); 
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const text = await response.text();
+                
+                // 1. Split the text by the explicit update delimiter 'next one'
+                const updateBlocks = text.split('next one');
+                
+                // Use a Set to collect all unique regions for the filter dropdown
+                const regions = new Set(['All']);
+
+                allUpdates = updateBlocks.map(block => {
+                    const line = block.trim();
+                    if (!line) return null; // Skip empty blocks resulting from the split or trimming
+
+                    // 2. Split the block content by the field delimiter ' /-/ '
+                    const splitParts = line.split(' /-/ ');
+                    
+                    // The required format is 5 fields (TS, Header, Info, Region, Image), meaning 4 delimiters.
+                    if (splitParts.length < 4) { 
+                        console.error("Skipping malformed update block (less than 4 expected delimiters):", line);
+                        return null;
+                    }
+
+                    // 3. Extract parts: The first two (TS, Header) and the last two (Region, Image) are safe.
+                    const timestampStr = splitParts[0].trim();
+                    const header = splitParts[1].trim();
+                    const region = splitParts[splitParts.length - 2].trim();
+                    const image = splitParts[splitParts.length - 1].trim();
+
+                    // 4. Reconstruct the Information field by joining the remaining middle parts back together.
+                    // The info parts start at index 2 and go up to the second-to-last part (length - 2).
+                    const infoParts = splitParts.slice(2, splitParts.length - 2);
+                    const info = infoParts.join(' /-/ ').trim();
+
+                    const update = {
+                        timestamp: parseInt(timestampStr, 10),
+                        header: header,
+                        // Replace the text literal newline (\n) with an HTML <br> tag for display
+                        info: info.replace(/\\n/g, '<br>'), 
+                        region: region,
+                        image: image
+                    };
+                    
+                    // Final checks
+                    if (isNaN(update.timestamp)) {
+                        console.error("Skipping update with invalid timestamp:", line);
+                        return null;
+                    }
+
+                    regions.add(update.region);
+                    return update;
+
+                }).filter(u => u !== null);
+
+                // Sort by timestamp (newest first)
+                allUpdates.sort((a, b) => b.timestamp - a.timestamp); 
+                
+                // Populate the filter dropdown options
+                filterSelect.innerHTML = '';
+                regions.forEach(region => {
+                    const option = document.createElement('option');
+                    option.value = region;
+                    option.textContent = region;
+                    filterSelect.appendChild(option);
+                });
+
+                // Set up the event listener for filtering
+                filterSelect.addEventListener('change', (e) => {
+                    renderUpdates(e.target.value);
+                });
+
+                renderUpdates('All'); // Initial render
+                
+            } catch (e) {
+                console.error("Failed to load updates:", e);
+                container.innerHTML = `<p class="text-center text-xl text-red-400">Error loading updates. Could not fetch data. Please ensure 'updates.txt' is available in the same location as this file.</p>`;
+            }
+        }
+
+        /**
+         * Renders the updates to the DOM, filtered by the selected region.
+         * @param {string} filterRegion - The region to filter by ('All' for no filter).
+         */
+        function renderUpdates(filterRegion) {
+            const container = document.getElementById('updates-container');
+            
+            // Filter the global list of updates
+            const filteredUpdates = allUpdates.filter(update => 
+                filterRegion === 'All' || update.region === filterRegion
+            );
+
+            if (filteredUpdates.length === 0) {
+                container.innerHTML = `<p class="text-center text-xl text-gray-400 p-8 rounded-lg border border-gray-700/50 bg-primary/50">No updates found for region: <span class="text-accent font-semibold">${filterRegion}</span></p>`;
+                return;
+            }
+
+            // Generate the HTML for the filtered updates
+            container.innerHTML = filteredUpdates.map(update => `
+                <div class="bg-primary p-6 rounded-xl shadow-2xl hover:shadow-accent/30 transition duration-300 border border-gray-700 space-y-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                        <h3 class="text-2xl font-bold text-white">${update.header}</h3>
+                        <p class="text-sm text-accent font-mono mt-2 sm:mt-0 whitespace-nowrap">${formatDate(update.timestamp)}</p>
+                    </div>
+                    
+                    ${update.image ? `<img src="${update.image}" class="w-full h-48 object-cover rounded-lg my-4 shadow-lg border border-gray-700" alt="Update Image">` : ''}
+
+                    <div class="text-gray-300 text-base leading-relaxed">${update.info}</div>
+                    
+                    <div class="pt-4 border-t border-gray-700 flex justify-end">
+                        <span class="inline-block bg-accent text-sm font-semibold px-4 py-1 rounded-full text-white">
+                            ${update.region}
+                        </span>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // Window load handler
+        window.onload = function() {
+            // Set the current year in the footer
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+            
+            // Mobile menu toggle logic
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+
+            mobileMenuButton.addEventListener('click', () => {
+                const isExpanded = mobileMenuButton.getAttribute('aria-expanded') === 'true' || false;
+                mobileMenuButton.setAttribute('aria-expanded', !isExpanded);
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            // Close mobile menu on link click (smooth scroll)
+            const mobileLinks = mobileMenu.querySelectorAll('a');
+            mobileLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    setTimeout(() => {
+                        mobileMenu.classList.add('hidden');
+                        mobileMenuButton.setAttribute('aria-expanded', 'false');
+                    }, 50); 
+                });
+            });
+            
+            // Start loading and rendering updates
+            loadUpdates();
+        };
+    </script>
 </body>
 </html>
