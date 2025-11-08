@@ -320,6 +320,11 @@
                     <!-- Updates will be rendered here by JavaScript -->
                     <p class="text-center text-lg text-accent">Loading updates, please wait...</p>
                 </div>
+                
+                <!-- Pagination Controls Container -->
+                <div id="pagination-controls" class="mt-10 flex flex-wrap justify-center space-x-2">
+                    <!-- Pagination buttons will be rendered here by JavaScript -->
+                </div>
             </div>
         </section>
 
@@ -345,6 +350,11 @@
         const UPDATES_URL = './updates.txt'; 
         let allUpdates = [];
 
+        // Pagination State
+        let currentFilter = 'All';
+        let currentPage = 1;
+        const updatesPerPage = 5;
+
         /**
          * Converts a Unix timestamp (seconds) into a readable date string (e.g., "15 July 2025").
          * @param {number} timestamp - The Unix timestamp in seconds.
@@ -367,7 +377,6 @@
             const filterSelect = document.getElementById('region-filter');
             container.innerHTML = `<p class="text-center text-lg text-accent">Loading updates, please wait...</p>`;
 
-            // Clear any existing options and add a temporary loading state option for user feedback
             filterSelect.innerHTML = '<option value="All">Loading...</option>';
 
             try {
@@ -407,6 +416,7 @@
                     const region = splitParts[3].trim(); 
                     
                     // The image is the last part (splitParts[4]), or an empty string if the last delimiter was omitted/empty.
+                    // This ensures the image field is empty if it's just spaces.
                     const image = splitParts.length > 4 ? splitParts[4].trim() : ''; 
 
                     const update = {
@@ -442,12 +452,13 @@
                     filterSelect.appendChild(option);
                 });
 
-                // Set up the event listener for filtering
+                // Set up the event listener for filtering, which resets to page 1
                 filterSelect.addEventListener('change', (e) => {
-                    renderUpdates(e.target.value);
+                    currentFilter = e.target.value;
+                    renderUpdates(1); // Reset to page 1 on filter change
                 });
 
-                renderUpdates('All'); // Initial render
+                renderUpdates(1); // Initial render on page 1
                 
             } catch (e) {
                 console.error("Failed to load updates:", e);
@@ -457,24 +468,111 @@
         }
 
         /**
-         * Renders the updates to the DOM, filtered by the selected region.
-         * @param {string} filterRegion - The region to filter by ('All' for no filter).
+         * Renders the pagination controls (buttons) to the DOM.
          */
-        function renderUpdates(filterRegion) {
-            const container = document.getElementById('updates-container');
-            
-            // Filter the global list of updates using the 'region' field
-            const filteredUpdates = allUpdates.filter(update => 
-                filterRegion === 'All' || update.region === filterRegion
-            );
+        function renderPaginationControls(totalUpdates, totalPages) {
+            const controlsContainer = document.getElementById('pagination-controls');
+            controlsContainer.innerHTML = ''; // Clear previous controls
 
-            if (filteredUpdates.length === 0) {
-                container.innerHTML = `<p class="text-center text-xl text-gray-400 p-8 rounded-lg border border-gray-700/50 bg-primary/50">No updates found for region: <span class="text-accent font-semibold">${filterRegion}</span></p>`;
+            if (totalUpdates <= updatesPerPage) {
+                // No pagination needed
                 return;
             }
 
-            // Generate the HTML for the filtered updates
-            container.innerHTML = filteredUpdates.map(update => `
+            const buttonClass = "px-4 py-2 rounded-lg font-semibold text-sm transition duration-150 whitespace-nowrap";
+            const activeClass = "bg-accent text-white ring-2 ring-accent";
+            const inactiveClass = "bg-primary text-gray-300 hover:bg-accent/30";
+            const disabledClass = "bg-gray-700/50 text-gray-500 cursor-not-allowed";
+
+            let html = '';
+
+            // Previous Button
+            html += `<button id="prev-btn" class="${buttonClass} ${currentPage === 1 ? disabledClass : inactiveClass}" ${currentPage === 1 ? 'disabled' : ''} data-page="${currentPage - 1}"> &larr; Prev </button>`;
+
+            // Page Buttons (Render smart range)
+            const maxPagesToShow = 5; 
+            let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+            let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+
+            // Adjust start page if we are near the end
+            if (endPage - startPage + 1 < maxPagesToShow) {
+                startPage = Math.max(1, endPage - maxPagesToShow + 1);
+            }
+            
+            // Show first page and ellipsis if needed
+            if (startPage > 1) {
+                html += `<button class="${buttonClass} ${inactiveClass}" data-page="1">1</button>`;
+                if (startPage > 2) {
+                    html += `<span class="text-gray-400 self-end mb-2">...</span>`;
+                }
+            }
+
+
+            for (let i = startPage; i <= endPage; i++) {
+                html += `<button class="${buttonClass} ${i === currentPage ? activeClass : inactiveClass}" data-page="${i}">${i}</button>`;
+            }
+            
+            // Show last page and ellipsis if needed
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) {
+                     html += `<span class="text-gray-400 self-end mb-2">...</span>`;
+                }
+                html += `<button class="${buttonClass} ${inactiveClass}" data-page="${totalPages}">${totalPages}</button>`;
+            }
+
+
+            // Next Button
+            html += `<button id="next-btn" class="${buttonClass} ${currentPage === totalPages ? disabledClass : inactiveClass}" ${currentPage === totalPages ? 'disabled' : ''} data-page="${currentPage + 1}"> Next &rarr; </button>`;
+
+            controlsContainer.innerHTML = html;
+            
+            // Attach event listeners to buttons
+            controlsContainer.querySelectorAll('button').forEach(button => {
+                if (!button.disabled) {
+                    button.addEventListener('click', () => {
+                        const newPage = parseInt(button.dataset.page);
+                        renderUpdates(newPage);
+                        // Scroll to the updates section
+                        document.getElementById('updates-container').scrollIntoView({ behavior: 'smooth' });
+                    });
+                }
+            });
+        }
+
+
+        /**
+         * Renders the updates to the DOM, filtered and paginated.
+         * @param {number} page - The current page number to display.
+         */
+        function renderUpdates(page) {
+            const container = document.getElementById('updates-container');
+            
+            // 1. Filter the global list of updates
+            const filteredUpdates = allUpdates.filter(update => 
+                currentFilter === 'All' || update.region === currentFilter
+            );
+
+            // 2. Calculate Pagination variables
+            const totalUpdates = filteredUpdates.length;
+            const totalPages = Math.ceil(totalUpdates / updatesPerPage);
+            
+            // Ensure page is clamped to a valid range
+            currentPage = Math.min(Math.max(1, page), totalPages || 1); 
+
+            if (totalUpdates === 0) {
+                container.innerHTML = `<p class="text-center text-xl text-gray-400 p-8 rounded-lg border border-gray-700/50 bg-primary/50">No updates found for region: <span class="text-accent font-semibold">${currentFilter}</span></p>`;
+                document.getElementById('pagination-controls').innerHTML = '';
+                return;
+            }
+
+            // 3. Slice the array for the current page
+            const startIndex = (currentPage - 1) * updatesPerPage;
+            const endIndex = startIndex + updatesPerPage;
+            const updatesForPage = filteredUpdates.slice(startIndex, endIndex);
+
+
+            // 4. Generate the HTML for the filtered and sliced updates
+            container.innerHTML = updatesForPage.map(update => `
                 <div class="bg-primary p-6 rounded-xl shadow-2xl hover:shadow-accent/30 transition duration-300 border border-gray-700 space-y-4">
                     <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between">
                         <h3 class="text-2xl font-bold text-white">${update.header}</h3>
@@ -485,7 +583,7 @@
                         </div>
                     </div>
                     
-                    <!-- Image is conditionally rendered only if present and non-empty -->
+                    <!-- Image is conditionally rendered only if present and non-empty. This addresses the user request. -->
                     ${update.image ? `
                         <img src="${update.image}" 
                              class="w-full h-48 object-cover rounded-lg my-4 shadow-lg border border-gray-700" 
@@ -497,6 +595,9 @@
                     
                 </div>
             `).join('');
+            
+            // 5. Render Pagination Controls
+            renderPaginationControls(totalUpdates, totalPages);
         }
         
         // Window load handler
