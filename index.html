@@ -312,7 +312,6 @@
                     <label for="region-filter" class="text-lg text-gray-300 mr-4 self-center font-semibold">Filter by Region:</label>
                     <select id="region-filter" class="w-full max-w-xs px-4 py-3 rounded-lg border-gray-700 bg-primary text-white shadow-md focus:border-accent focus:ring-accent ring-1 ring-accent/50 transition duration-150">
                         <!-- Options will be populated by JavaScript -->
-                        <option value="All">Loading...</option>
                     </select>
                 </div>
 
@@ -368,6 +367,9 @@
             const filterSelect = document.getElementById('region-filter');
             container.innerHTML = `<p class="text-center text-lg text-accent">Loading updates, please wait...</p>`;
 
+            // Clear any existing options and add a temporary loading state option for user feedback
+            filterSelect.innerHTML = '<option value="All">Loading...</option>';
+
             try {
                 const response = await fetch(UPDATES_URL, {
                     cache: 'no-cache'
@@ -381,8 +383,9 @@
                 // 1. Split the text by the explicit update delimiter 'next one'
                 const updateBlocks = text.split('next one');
                 
-                // Use a Set to collect all unique regions for the filter dropdown
-                const regions = new Set(['All']);
+                // Use a Set to collect all unique regions, starting with 'All' cleanly
+                const regions = new Set();
+                regions.add('All');
 
                 allUpdates = updateBlocks.map(block => {
                     const line = block.trim();
@@ -404,7 +407,6 @@
                     const region = splitParts[3].trim(); 
                     
                     // The image is the last part (splitParts[4]), or an empty string if the last delimiter was omitted/empty.
-                    // We check if the split resulted in a 5th part (index 4) and use it, otherwise it's empty.
                     const image = splitParts.length > 4 ? splitParts[4].trim() : ''; 
 
                     const update = {
@@ -432,7 +434,7 @@
                 allUpdates.sort((a, b) => b.timestamp - a.timestamp); 
                 
                 // Populate the filter dropdown options
-                filterSelect.innerHTML = '';
+                filterSelect.innerHTML = ''; // Clear the 'Loading...' option
                 regions.forEach(region => {
                     const option = document.createElement('option');
                     option.value = region;
@@ -450,6 +452,7 @@
             } catch (e) {
                 console.error("Failed to load updates:", e);
                 container.innerHTML = `<p class="text-center text-xl text-red-400">Error loading updates. Please ensure 'updates.txt' is available and correctly formatted with 4 delimiters (5 fields).</p>`;
+                filterSelect.innerHTML = '<option value="All">Error Loading Regions</option>';
             }
         }
 
@@ -492,7 +495,6 @@
 
                     <div class="text-gray-300 text-base leading-relaxed">${update.info}</div>
                     
-                    <!-- The region is already in the header, removing redundant footer tag -->
                 </div>
             `).join('');
         }
