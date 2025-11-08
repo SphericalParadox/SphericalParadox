@@ -373,99 +373,50 @@
          * Assumes a 5-field structure: TS /-/ Header /-/ Information /-/ Region /-/ Image (optional)
          */
         async function loadUpdates() {
-            const container = document.getElementById('updates-container');
-            const filterSelect = document.getElementById('region-filter');
-            container.innerHTML = `<p class="text-center text-lg text-accent">Loading updates, please wait...</p>`;
+			const container = document.getElementById('updates-container');
+			const filterSelect = document.getElementById('region-filter');
+			container.innerHTML = `<p class="text-center text-lg text-accent">Loading updates, please wait...</p>`;
+			filterSelect.innerHTML = '<option value="All">Loading...</option>';
 
-            filterSelect.innerHTML = '<option value="All">Loading...</option>';
+			try {
+				const response = await fetch(UPDATES_URL, { cache: 'no-cache' });
+				if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+				const text = await response.text();
 
-            try {
-                const response = await fetch(UPDATES_URL, {
-                    cache: 'no-cache'
-                }); 
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const text = await response.text();
-                
-                // 1. Split the text by the explicit update delimiter '/-----/'
-                // Note: The previous code was truncated here. Reverting to the robust delimiter.
-                const updateBlocks = text.split('/-----/');
-                
-                // Use a Set to collect all unique regions, starting with 'All' cleanly
-                const regions = new Set();
-                regions.add('All');
+				const lines = text.split('\n').map(line => line.trim()).filter(line => line && !line.startsWith('#'));
 
-                allUpdates = updateBlocks.map(block => {
-                    const line = block.trim();
-                    if (!line) return null; // Skip empty blocks resulting from the split or trimming
+				const regions = new Set(['All']);
+				allUpdates = lines.map(line => {
+					const [timestampStr, header, info, region, image=''] = line.split(' | ').map(s => s.trim());
+					const timestamp = parseInt(timestampStr, 10);
+					if (isNaN(timestamp) || !header || !info || !region) return null;
+					regions.add(region);
+					return { timestamp, header, info: info.replace(/\\n/g, '<br>'), region, image };
+				}).filter(u => u !== null);
 
-                    // 2. Split the block content by the field delimiter ' /-/ ', LIMITED TO 5 PARTS (4 DELIMITERS)
-                    // This limits the split, allowing the description (field 3) to contain ' /-/ ' delimiters.
-                    const splitParts = line.split(' /-/ ', 5); 
-                    
-                    if (splitParts.length < 4) { 
-                        console.error("Skipping malformed update block (less than 4 parts for 5-field format):", line);
-                        return null;
-                    }
+				allUpdates.sort((a, b) => b.timestamp - a.timestamp);
 
-                    // 3. Extract parts based on 5-field structure:
-                    const timestampStr = splitParts[0].trim();
-                    const header = splitParts[1].trim();
-                    const info = splitParts[2].trim(); 
-                    const region = splitParts[3].trim(); 
-                    
-                    // The image is the last part, or an empty string if it wasn't provided.
-                    const image = splitParts.length > 4 ? splitParts[4].trim() : ''; 
+				filterSelect.innerHTML = '';
+				regions.forEach(region => {
+					const option = document.createElement('option');
+					option.value = region;
+					option.textContent = region;
+					filterSelect.appendChild(option);
+				});
 
-                    const update = {
-                        timestamp: parseInt(timestampStr, 10),
-                        header: header,
-                        // Replace the text literal newline (\n) with an HTML <br> tag for display
-                        info: info.replace(/\\n/g, '<br>'), 
-                        region: region, // Used for filtering and display
-                        image: image
-                    };
-                    
-                    // Final checks
-                    if (isNaN(update.timestamp)) {
-                        console.error("Skipping update with invalid timestamp:", line);
-                        return null;
-                    }
+				filterSelect.addEventListener('change', (e) => {
+					currentFilter = e.target.value;
+					renderUpdates(1);
+				});
 
-                    // Populate the filter set
-                    regions.add(update.region);
-                    return update;
+				renderUpdates(1);
+			} catch (e) {
+				console.error("Failed to load updates:", e);
+				container.innerHTML = `<p class="text-center text-xl text-red-400">Error loading updates. Ensure 'updates.txt' exists and is formatted correctly.</p>`;
+				filterSelect.innerHTML = '<option value="All">Error Loading Regions</option>';
+			}
+		}
 
-                }).filter(u => u !== null);
-
-                // Sort by timestamp (newest first)
-                allUpdates.sort((a, b) => b.timestamp - a.timestamp); 
-                
-                // Populate the filter dropdown options
-                filterSelect.innerHTML = ''; // Clear the 'Loading...' option
-                regions.forEach(region => {
-                    const option = document.createElement('option');
-                    option.value = region;
-                    option.textContent = region;
-                    filterSelect.appendChild(option);
-                });
-
-                // Set up the event listener for filtering, which resets to page 1
-                filterSelect.addEventListener('change', (e) => {
-                    currentFilter = e.target.value;
-                    renderUpdates(1); // Reset to page 1 on filter change
-                });
-
-                renderUpdates(1); // Initial render on page 1
-                
-            } catch (e) {
-                console.error("Failed to load updates:", e);
-                container.innerHTML = `<p class="text-center text-xl text-red-400">Error loading updates. Please ensure 'updates.txt' is available and correctly formatted with 4 delimiters (5 fields).</p>`;
-                filterSelect.innerHTML = '<option value="All">Error Loading Regions</option>';
-            }
-        }
 
         /**
          * Renders the pagination controls (buttons) to the DOM.
