@@ -389,8 +389,9 @@
                 }
                 const text = await response.text();
                 
-                // 1. Split the text by the explicit update delimiter 'next one'
-                const updateBlocks = text.split('next one');
+                // 1. Split the text by the explicit update delimiter '/-----/'
+                // Note: The previous code was truncated here. Reverting to the robust delimiter.
+                const updateBlocks = text.split('/-----/');
                 
                 // Use a Set to collect all unique regions, starting with 'All' cleanly
                 const regions = new Set();
@@ -400,10 +401,10 @@
                     const line = block.trim();
                     if (!line) return null; // Skip empty blocks resulting from the split or trimming
 
-                    // 2. Split the block content by the field delimiter ' /-/ '
-                    const splitParts = line.split(' /-/ ');
+                    // 2. Split the block content by the field delimiter ' /-/ ', LIMITED TO 5 PARTS (4 DELIMITERS)
+                    // This limits the split, allowing the description (field 3) to contain ' /-/ ' delimiters.
+                    const splitParts = line.split(' /-/ ', 5); 
                     
-                    // The required format is 5 fields (4 delimiters). Check for at least 4 parts.
                     if (splitParts.length < 4) { 
                         console.error("Skipping malformed update block (less than 4 parts for 5-field format):", line);
                         return null;
@@ -415,8 +416,7 @@
                     const info = splitParts[2].trim(); 
                     const region = splitParts[3].trim(); 
                     
-                    // The image is the last part (splitParts[4]), or an empty string if the last delimiter was omitted/empty.
-                    // This ensures the image field is empty if it's just spaces.
+                    // The image is the last part, or an empty string if it wasn't provided.
                     const image = splitParts.length > 4 ? splitParts[4].trim() : ''; 
 
                     const update = {
@@ -572,7 +572,11 @@
 
 
             // 4. Generate the HTML for the filtered and sliced updates
-            container.innerHTML = updatesForPage.map(update => `
+            container.innerHTML = updatesForPage.map(update => {
+                // Ensure image source is trimmed for rendering check, in case of invisible characters
+                const imageSrc = update.image.trim(); 
+
+                return `
                 <div class="bg-primary p-6 rounded-xl shadow-2xl hover:shadow-accent/30 transition duration-300 border border-gray-700 space-y-4">
                     <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between">
                         <h3 class="text-2xl font-bold text-white">${update.header}</h3>
@@ -583,9 +587,9 @@
                         </div>
                     </div>
                     
-                    <!-- Image is conditionally rendered only if present and non-empty. This addresses the user request. -->
-                    ${update.image ? `
-                        <img src="${update.image}" 
+                    <!-- Image is conditionally rendered only if the trimmed source has a length greater than zero. This is a failsafe against invisible characters. -->
+                    ${imageSrc.length > 0 ? `
+                        <img src="${imageSrc}" 
                              class="w-full h-48 object-cover rounded-lg my-4 shadow-lg border border-gray-700" 
                              alt="Update image for ${update.header}"
                              onerror="this.onerror=null;this.src='https://placehold.co/800x200/375064/517591?text=Image+Unavailable';">
@@ -594,7 +598,8 @@
                     <div class="text-gray-300 text-base leading-relaxed">${update.info}</div>
                     
                 </div>
-            `).join('');
+                `;
+            }).join('');
             
             // 5. Render Pagination Controls
             renderPaginationControls(totalUpdates, totalPages);
