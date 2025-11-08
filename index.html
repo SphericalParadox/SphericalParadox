@@ -342,7 +342,7 @@
     </footer>
 
     <script>
-        // FIX: Changed to relative path to avoid CORS issues now that the file is in the same repository.
+        // Use relative path for same-origin fetching
         const UPDATES_URL = './updates.txt'; 
         let allUpdates = [];
 
@@ -361,6 +361,7 @@
 
         /**
          * Fetches, parses, and loads the updates data into the application state.
+         * Assumes a 5-field structure: TS /-/ Header /-/ Information /-/ Region /-/ Image (optional)
          */
         async function loadUpdates() {
             const container = document.getElementById('updates-container');
@@ -368,10 +369,6 @@
             container.innerHTML = `<p class="text-center text-lg text-accent">Loading updates, please wait...</p>`;
 
             try {
-                // Diagnostic: Log the URL being attempted to fetch for debugging network issues
-                console.log("Attempting to fetch updates from:", UPDATES_URL);
-                
-                // Using 'no-cache' for robustness, although same-origin requests are usually fine.
                 const response = await fetch(UPDATES_URL, {
                     cache: 'no-cache'
                 }); 
@@ -394,29 +391,28 @@
                     // 2. Split the block content by the field delimiter ' /-/ '
                     const splitParts = line.split(' /-/ ');
                     
-                    // The required format is 5 fields (TS, Header, Info, Region, Image), meaning 4 delimiters.
+                    // The required format is 5 fields (4 delimiters). Check for at least 4 parts.
                     if (splitParts.length < 4) { 
-                        console.error("Skipping malformed update block (less than 4 expected delimiters):", line);
+                        console.error("Skipping malformed update block (less than 4 parts for 5-field format):", line);
                         return null;
                     }
 
-                    // 3. Extract parts: The first two (TS, Header) and the last two (Region, Image) are safe.
+                    // 3. Extract parts based on 5-field structure:
                     const timestampStr = splitParts[0].trim();
                     const header = splitParts[1].trim();
-                    const region = splitParts[splitParts.length - 2].trim();
-                    const image = splitParts[splitParts.length - 1].trim();
-
-                    // 4. Reconstruct the Information field by joining the remaining middle parts back together.
-                    // The info parts start at index 2 and go up to the second-to-last part (length - 2).
-                    const infoParts = splitParts.slice(2, splitParts.length - 2);
-                    const info = infoParts.join(' /-/ ').trim();
+                    const info = splitParts[2].trim(); 
+                    const region = splitParts[3].trim(); 
+                    
+                    // The image is the last part (splitParts[4]), or an empty string if the last delimiter was omitted/empty.
+                    // We check if the split resulted in a 5th part (index 4) and use it, otherwise it's empty.
+                    const image = splitParts.length > 4 ? splitParts[4].trim() : ''; 
 
                     const update = {
                         timestamp: parseInt(timestampStr, 10),
                         header: header,
                         // Replace the text literal newline (\n) with an HTML <br> tag for display
                         info: info.replace(/\\n/g, '<br>'), 
-                        region: region,
+                        region: region, // Used for filtering and display
                         image: image
                     };
                     
@@ -426,6 +422,7 @@
                         return null;
                     }
 
+                    // Populate the filter set
                     regions.add(update.region);
                     return update;
 
@@ -452,7 +449,7 @@
                 
             } catch (e) {
                 console.error("Failed to load updates:", e);
-                container.innerHTML = `<p class="text-center text-xl text-red-400">Error loading updates. Could not fetch data. Please ensure 'updates.txt' is available in the same location as this file.</p>`;
+                container.innerHTML = `<p class="text-center text-xl text-red-400">Error loading updates. Please ensure 'updates.txt' is available and correctly formatted with 4 delimiters (5 fields).</p>`;
             }
         }
 
@@ -463,7 +460,7 @@
         function renderUpdates(filterRegion) {
             const container = document.getElementById('updates-container');
             
-            // Filter the global list of updates
+            // Filter the global list of updates using the 'region' field
             const filteredUpdates = allUpdates.filter(update => 
                 filterRegion === 'All' || update.region === filterRegion
             );
@@ -476,20 +473,26 @@
             // Generate the HTML for the filtered updates
             container.innerHTML = filteredUpdates.map(update => `
                 <div class="bg-primary p-6 rounded-xl shadow-2xl hover:shadow-accent/30 transition duration-300 border border-gray-700 space-y-4">
-                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                    <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between">
                         <h3 class="text-2xl font-bold text-white">${update.header}</h3>
-                        <p class="text-sm text-accent font-mono mt-2 sm:mt-0 whitespace-nowrap">${formatDate(update.timestamp)}</p>
+                        <!-- Stacking Region and Date in the header -->
+                        <div class="text-sm text-right mt-2 sm:mt-0 whitespace-nowrap">
+                            <span class="inline-block bg-accent/20 text-accent font-semibold px-2 py-0.5 rounded-full mb-1">${update.region}</span>
+                            <p class="text-gray-400 font-mono">${formatDate(update.timestamp)}</p>
+                        </div>
                     </div>
                     
-                    ${update.image ? `<img src="${update.image}" class="w-full h-48 object-cover rounded-lg my-4 shadow-lg border border-gray-700" alt="Update Image">` : ''}
+                    <!-- Image is conditionally rendered only if present and non-empty -->
+                    ${update.image ? `
+                        <img src="${update.image}" 
+                             class="w-full h-48 object-cover rounded-lg my-4 shadow-lg border border-gray-700" 
+                             alt="Update image for ${update.header}"
+                             onerror="this.onerror=null;this.src='https://placehold.co/800x200/375064/517591?text=Image+Unavailable';">
+                    ` : ''}
 
                     <div class="text-gray-300 text-base leading-relaxed">${update.info}</div>
                     
-                    <div class="pt-4 border-t border-gray-700 flex justify-end">
-                        <span class="inline-block bg-accent text-sm font-semibold px-4 py-1 rounded-full text-white">
-                            ${update.region}
-                        </span>
-                    </div>
+                    <!-- The region is already in the header, removing redundant footer tag -->
                 </div>
             `).join('');
         }
